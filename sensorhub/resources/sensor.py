@@ -1,5 +1,6 @@
 from flask import Response, request, url_for
 from flask_restful import Resource
+from jsonschema import ValidationError, validate
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequest, Conflict, UnsupportedMediaType
 
@@ -14,7 +15,7 @@ class SensorCollection(Resource):
         response_data = []
         sensors = Sensor.query.all()
         for sensor in sensors:
-            response_data.append([sensor.name, sensor.model])
+            response_data.append(sensor.serialize())
         return response_data
 
     @require_admin
@@ -36,7 +37,6 @@ class SensorCollection(Resource):
             raise BadRequest(description=str(e))
         except IntegrityError:
             raise Conflict(
-                409,
                 description="Sensor with name '{name}' already exists.".format(
                     **request.json
                 )
@@ -52,6 +52,7 @@ class SensorItem(Resource):
     def get(self, sensor):
         return sensor.serialize()
 
+    @require_admin
     def put(self, sensor):
         if not request.json:
             raise UnsupportedMediaType
@@ -67,7 +68,6 @@ class SensorItem(Resource):
             db.session.commit()
         except IntegrityError:
             raise Conflict(
-                409,
                 description="Sensor with name '{name}' already exists.".format(
                     **request.json
                 )
