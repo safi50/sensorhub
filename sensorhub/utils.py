@@ -20,8 +20,8 @@ class SensorConverter(BaseConverter):
 
 
 def page_key(*args, **kwargs):
-    start = request.args.get("start", 0)
-    return request.path + f"[start_{start}]"
+    page = request.args.get("page", 0)
+    return request.path + f"[page_{page}]"
 
 def require_admin(func):
     @wraps(func)
