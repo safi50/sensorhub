@@ -46,9 +46,6 @@ def client():
     yield app.test_client()
 
     cache.clear()
-    db.session.rollback()
-    db.drop_all()
-    db.session.remove()
     os.close(db_fd)
     os.unlink(db_fname)
 
