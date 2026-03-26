@@ -10,7 +10,11 @@ dependencies = [
     "flask-caching",
     "flask-restful",
     "flask-sqlalchemy",
+    "gunicorn<25",
     "jsonschema",
     "rfc3339-validator",
     "SQLAlchemy",
 ]
+
+[tool.setuptools.packages.find]
+include = ["sensorhub*"]
